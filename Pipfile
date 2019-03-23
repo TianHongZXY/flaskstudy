@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 watchdog = "*"
 flask-socketio = "*"
+autopep8 = "*"
 
 [packages]
 flask = "*"
