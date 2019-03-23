@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, abort, make_response, json, jsonify, session, g, current_app
+from flask import Flask, request, render_template, redirect, url_for, abort, make_response, json, jsonify, session, g, current_app
 import click
 import os
 from urllib.parse import urlparse, urljoin
@@ -9,18 +9,23 @@ app.secret_key = os.getenv('SECRET_KEY', 'secret string')
 
 
 @app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route('/hello')
 def hello():
     name = g.name
-    if name is None:
-        name = request.cookies.get('name', 'human')
-
-        response = '<h1>Hello %s!</h1>' %escape(name)
+    if name is not None:
+        # name = request.cookies.get('name', 'human')
+        # name = request.args.get('name', 'human')
+        response = '<h1>Hello %s!</h1>' % escape(name)
 
         if 'logged_in' in session:
             response += '[Authenticated]'
         else:
             response += '[Not Authenticated]'
+    else:
+        response = '<h1>Hello!</h1>'
     return response
 
 
@@ -167,3 +172,26 @@ def show_post():
 @app.route('/more')
 def load_post():
     return generate_lorem_ipsum(n=1)
+
+movies = [
+    {'name': 'My Neighbor Totoro', 'year': '1988'},
+    {'name': 'Three Colours trilogy', 'year': '1993'},
+    {'name': 'Forrest Gump', 'year': '1994'},
+    {'name': 'Perfect Blue', 'year': '1997'},
+    {'name': 'The Matrix', 'year': '1999'},
+    {'name': 'Memento', 'year': '2000'},
+    {'name': 'The Bucket list', 'year': '2007'},
+    {'name': 'Black Swan', 'year': '2010'},
+    {'name': 'Gone Girl', 'year': '2014'},
+    {'name': 'CoCo', 'year': '2017'},
+]
+
+@app.route('/watchlist')
+def watchlist():
+    return render_template('watchlist.html',user=None, movies=movies)
+
+# 模板上下文处理函数，它返回的值在任意一个模板中都可用
+@app.context_processor
+def inject_foo():
+    foo = 'You are a foo.'
+    return {'foo':foo}
