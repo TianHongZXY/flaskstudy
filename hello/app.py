@@ -1,12 +1,14 @@
-from flask import Flask, request, redirect, url_for, abort, make_response, json, jsonify, session, g, current_app
+from flask import Flask, request, render_template, redirect, url_for, abort, make_response, json, jsonify, session, g, current_app
 import click
 import os
 from urllib.parse import urlparse, urljoin
 from jinja2 import escape
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'secret string')
-
+bootstrap = Bootstrap()
+bootstrap.init_app(app)
 
 @app.route('/')
 @app.route('/hello')
@@ -146,24 +148,32 @@ from jinja2.utils import generate_lorem_ipsum
 @app.route('/post')
 def show_post():
     post_body = generate_lorem_ipsum(n=2) # 生成 两 段 随机 文本
-    return ''' <h1> A very long post</h1> 
-    <div class="body">%s</div> 
-    <button id="load"> Load More</ button> 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript"> 
-    $(function() { 
-        $('#load').click(function(){ 
-        $.ajax({
-        url:'/more', // 目标URL 
-        type:'get', // 请求方法 
-        success:function(data){ // 返回2XX 响应后触发的回调函数 
-            $('.body').append(data); // 将返回的响应插入到页面中 
-            }
-            })
-            })
-            })
-            </script>''' % post_body
+    # return ''' <h1> A very long post</h1> 
+    # <div class="body">%s</div> 
+    # <button id="load"> Load More</ button> 
+    # <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    # <script type="text/javascript"> 
+    # $(function() { 
+    #     $('#load').click(function(){ 
+    #     $.ajax({
+    #     url:'/more', // 目标URL 
+    #     type:'get', // 请求方法 
+    #     success:function(data){ // 返回2XX 响应后触发的回调函数 
+    #         $('.body').append(data); // 将返回的响应插入到页面中 
+    #         }
+    #         })
+    #         })
+    #         })
+    #         </script>''' % post_body
+    return render_template('post.html', post_body=post_body)
 
 @app.route('/more')
 def load_post():
     return generate_lorem_ipsum(n=1)
+
+# 注册模板上下文处理函数,它的返回值在所有模板中都可直接用
+@app.context_processor
+def inject_foo():
+    foo = 'You are a foo.'
+    # foo变量在模板中可以直接使用
+    return {'foo':foo}
