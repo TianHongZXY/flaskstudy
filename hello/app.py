@@ -176,11 +176,6 @@ def show_post():
 def load_post():
     return generate_lorem_ipsum(n=1)
 
-# 注册模板上下文处理函数,它的返回值在所有模板中都可直接用
-@app.context_processor
-def inject_foo():
-    foo = 'You are a foo.'
-    # foo变量在模板中可以直接使用
 movies = [
     {'name': 'My Neighbor Totoro', 'year': '1988'},
     {'name': 'Three Colours trilogy', 'year': '1993'},
