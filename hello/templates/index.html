@@ -2,15 +2,13 @@
 {% from 'macros.html' import qux %}
 
 {% block content %}
-{% set name='baz' %}
+{% set birth='199933' %}
 <h1>Template</h1>
 <ul>
     <li><a href="{{ url_for('watchlist') }}">Watchlist</a></li>
     <li>Filter: {{ foo|musical }}</li>
     <li>Global: {{ bar() }}</li>
-    <li>Test: {% if name is baz %}I am baz.{% endif %}</li>
-    <li>Macro: {{ qux(amount=1) }}</li>
-    <li><a href="{{ url_for('watchlist_with_static') }}">Watchlist with image and styles.</a></li>
-    <li><a href="{{ url_for('just_flash') }}">Flash something</a></li>
+    <li>Test: {% if birth is zxybirth %}My birth is {{birth}}.{% endif %}</li>
+    <li>Macro: {{ qux(amount=5) }}</li>
 </ul>
 {% endblock %}
