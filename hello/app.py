@@ -1,4 +1,6 @@
-from flask import Flask, request, render_template, redirect, url_for, abort, make_response, json, jsonify, session, g, current_app
+from flask import Flask, request, render_template, redirect, \
+    url_for, abort, make_response, json, jsonify, session, g, current_app,\
+    Markup 
 import click
 import os
 from urllib.parse import urlparse, urljoin
@@ -191,10 +193,48 @@ movies = [
 
 @app.route('/watchlist')
 def watchlist():
-    return render_template('watchlist.html',user=None, movies=movies)
+    zxy = {'username':'zhuxinyu'}
+    return render_template('watchlist.html',user=zxy, movies=movies)
 
-# 模板上下文处理函数，它返回的值在任意一个模板中都可用
+# 自定义上下文
+# 模板上下文处理函数，渲染任意模板时，上下文处理函数都会被执行
+# 它们的返回值在任意一个模板中都可用
 @app.context_processor
 def inject_foo():
     foo = 'You are a foo.'
     return {'foo':foo}
+
+# 自定义全局函数
+# 在模板中可以直接使用
+# name默认为函数名，也可自定义
+@app.template_global(name='bar')
+def bar():
+    return 'I am your baba.'
+
+@app.template_filter(name='musical')
+def musical(s):
+    # Markup类可以标记安全字符，即不转义
+    return s + Markup(' &#9835;')
+
+# 3.2.5模板环境对象 jinja_env
+
+# 添加自定义全局对象
+def barrrr():
+    return 'I am your father!'
+
+fooooo = 'You are so silly.'
+app.jinja_env.globals['barrrr'] = barrrr
+app.jinja_env.globals['fooooo'] = fooooo
+
+# 添加自定义过滤器
+def smiling(s):
+    return s + ' :) '
+
+app.jinja_env.filters['smiling'] = smiling
+
+# 添加自定义测试器
+def zxybirth(n):
+    if n == '199933':
+        return True
+    return False
+app.jinja_env.tests['zxybirth'] = zxybirth
